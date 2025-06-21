@@ -1,30 +1,34 @@
-
 'use client';
 
 import { useEffect, useState } from 'react';
 import { Trophy, Loader2 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { getLeaderboard, type LeaderboardEntry } from '@/services/firestore';
+
+export interface LeaderboardEntry {
+  name: string;
+  score: number;
+  createdAt: string;
+}
 
 export function Leaderboard() {
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    async function fetchLeaderboard() {
-      setIsLoading(true);
-      try {
-        const data = await getLeaderboard();
-        setLeaderboard(data);
-      } catch (error) {
-        console.error("Failed to fetch leaderboard", error);
-        setLeaderboard([]);
-      } finally {
-        setIsLoading(false);
+    setIsLoading(true);
+    try {
+      const data = localStorage.getItem('quizResults');
+      if (data) {
+        const parsedData = JSON.parse(data) as LeaderboardEntry[];
+        setLeaderboard(parsedData.reverse());
       }
+    } catch (error) {
+      console.error("Failed to fetch leaderboard from localStorage", error);
+      setLeaderboard([]);
+    } finally {
+      setIsLoading(false);
     }
-    fetchLeaderboard();
   }, []);
 
   return (
@@ -35,7 +39,7 @@ export function Leaderboard() {
         </div>
         <CardTitle className="font-headline text-3xl tracking-widest uppercase">Leaderboard</CardTitle>
         <CardDescription className="font-body text-base mt-2">
-          Top 5 High Scores
+          Last 5 Scores
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -47,15 +51,13 @@ export function Leaderboard() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="w-[50px] text-center font-headline">Rank</TableHead>
                 <TableHead className="font-headline">Name</TableHead>
                 <TableHead className="text-right font-headline">Score</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {leaderboard.map((entry, index) => (
-                <TableRow key={entry.id}>
-                  <TableCell className="text-center font-bold text-lg">{index + 1}</TableCell>
+              {leaderboard.map((entry) => (
+                <TableRow key={entry.createdAt}>
                   <TableCell>{entry.name}</TableCell>
                   <TableCell className="text-right font-bold text-lg text-primary">{entry.score}</TableCell>
                 </TableRow>

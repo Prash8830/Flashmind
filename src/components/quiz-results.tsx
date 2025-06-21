@@ -1,13 +1,12 @@
 
 'use client';
 
-import { useState, useTransition } from 'react';
+import { useState } from 'react';
 import { Award, Loader2, Send } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
-import { addScoreToLeaderboard } from '@/services/firestore';
 import { Leaderboard } from './leaderboard';
 
 interface QuizResultsProps {
@@ -19,7 +18,6 @@ interface QuizResultsProps {
 
 export function QuizResults({ score, totalQuestions, onRestart, onExit }: QuizResultsProps) {
   const [name, setName] = useState('');
-  const [isSubmitting, startSubmitting] = useTransition();
   const [isScoreSubmitted, setIsScoreSubmitted] = useState(false);
   const { toast } = useToast();
   const percentage = Math.round((score / totalQuestions) * 100);
@@ -31,16 +29,18 @@ export function QuizResults({ score, totalQuestions, onRestart, onExit }: QuizRe
       return;
     }
 
-    startSubmitting(async () => {
-      try {
-        await addScoreToLeaderboard(name, score);
-        toast({ title: 'Score Submitted!', description: 'Your score has been added to the leaderboard.' });
-        setIsScoreSubmitted(true);
-      } catch (error) {
-        console.error('Error submitting score:', error);
-        toast({ title: 'Submission Failed', description: 'Could not save your score.', variant: 'destructive' });
-      }
-    });
+    try {
+      const results = JSON.parse(localStorage.getItem('quizResults') || '[]') as any[];
+      results.push({ name, score, createdAt: new Date().toISOString() });
+      const latestResults = results.slice(-5);
+      localStorage.setItem('quizResults', JSON.stringify(latestResults));
+      
+      toast({ title: 'Score Submitted!', description: 'Your score has been saved locally.' });
+      setIsScoreSubmitted(true);
+    } catch (error) {
+      console.error('Error submitting score to localStorage:', error);
+      toast({ title: 'Submission Failed', description: 'Could not save your score.', variant: 'destructive' });
+    }
   };
 
   return (
@@ -81,11 +81,10 @@ export function QuizResults({ score, totalQuestions, onRestart, onExit }: QuizRe
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     className="text-center h-12 text-lg"
-                    disabled={isSubmitting}
                   />
-                  <Button type="submit" className="w-full bg-accent hover:bg-accent/90 text-accent-foreground glow-accent" disabled={isSubmitting} size="lg">
-                    {isSubmitting ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : <Send className="mr-2 h-5 w-5" />}
-                    {isSubmitting ? 'Submitting...' : 'Save Score'}
+                  <Button type="submit" className="w-full bg-accent hover:bg-accent/90 text-accent-foreground glow-accent" size="lg">
+                    <Send className="mr-2 h-5 w-5" />
+                    Save Score
                   </Button>
               </form>
             )}
