@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useRef, useTransition } from 'react';
@@ -12,6 +13,7 @@ import { Flashcard } from './flashcard';
 import { QuizMode } from './quiz-mode';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
+import { Leaderboard } from './leaderboard';
 
 if (typeof window !== 'undefined') {
   pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
@@ -190,6 +192,8 @@ export function FlashcardGenerator() {
       )}
 
       {renderContent()}
+
+      {!isQuizMode && flashcards.length === 0 && <Leaderboard />}
     </div>
   );
 }
