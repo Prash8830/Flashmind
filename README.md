@@ -21,3 +21,11 @@ Built in just 4 hours during the VIBE-ATHON hackathon using **Firebase** and **G
 | 🧠 **AI Answer Explain** | Ask Gemini to explain why an answer is correct |
 | 🌗 **Dark/Light Toggle** | Switch between light and neon-dark themes |
 | 🔁 **Retry Quiz**
+
+
+<a href="https://studio.firebase.google.com/import?url=https%3A%2F%2Fgithub.com%2FPrash8830%2FFlashmind%2Ftree%2Fmaster">
+  <img
+    height="32"
+    alt="Open in Firebase Studio"
+    src="https://cdn.firebasestudio.dev/btn/open_dark_32@2x.png">
+</a>
