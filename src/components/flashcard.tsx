@@ -27,7 +27,7 @@ export function Flashcard({ question, answer, index }: FlashcardProps) {
     >
       <Card
         className={cn(
-          'relative h-64 w-full rounded-lg shadow-lg shadow-primary/20 border border-primary/50 transform-style-3d transition-transform duration-700 cursor-pointer',
+          'relative h-64 w-full rounded-lg card-glow border border-primary/50 transform-style-3d transition-transform duration-700 cursor-pointer',
           { '[transform:rotateY(180deg)]': isFlipped }
         )}
       >
@@ -35,7 +35,7 @@ export function Flashcard({ question, answer, index }: FlashcardProps) {
           <p className="text-sm text-primary font-headline uppercase tracking-widest">Question</p>
           <p className="mt-2 text-lg font-body">{question}</p>
         </div>
-        <div className="absolute backface-hidden w-full h-full p-6 flex flex-col justify-center items-center text-center [transform:rotateY(180deg)] bg-primary/10 rounded-lg">
+        <div className="absolute backface-hidden w-full h-all p-6 flex flex-col justify-center items-center text-center [transform:rotateY(180deg)] bg-primary/10 rounded-lg">
           <p className="text-sm text-primary font-headline uppercase tracking-widest">Answer</p>
           <p className="mt-2 text-lg font-body">{answer}</p>
         </div>

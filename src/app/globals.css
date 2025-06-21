@@ -10,6 +10,21 @@
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
   }
+  .text-glow-accent {
+    text-shadow: 0 0 8px hsl(var(--accent));
+  }
+  .glow-on-hover {
+    @apply transition-shadow duration-300;
+  }
+  .glow-on-hover:hover {
+    box-shadow: 0 0 8px hsl(var(--primary)), 0 0 16px hsl(var(--primary));
+  }
+  .glow-accent {
+    box-shadow: 0 0 8px hsl(var(--accent)), 0 0 16px hsl(var(--accent));
+  }
+  .card-glow {
+    box-shadow: 0 0 5px hsl(var(--primary)/0.8), 0 0 15px hsl(var(--primary)/0.6);
+  }
 }
 
 @layer base {

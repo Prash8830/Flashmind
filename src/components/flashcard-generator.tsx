@@ -109,12 +109,12 @@ export function FlashcardGenerator() {
         <CardContent className="space-y-6 px-8 pb-8">
           <div className="space-y-4">
             <Input type="file" accept="application/pdf" ref={fileInputRef} onChange={handleFileChange} className="hidden" disabled={isProcessing} />
-            <Button onClick={handleUploadClick} className="w-full" variant="outline" size="lg" disabled={isProcessing}>
+            <Button onClick={handleUploadClick} className="w-full glow-on-hover" variant="outline" size="lg" disabled={isProcessing}>
               <Upload className="mr-2 h-5 w-5" />
               {fileName ? 'Upload Another PDF' : 'Upload PDF'}
             </Button>
             {isProcessing && !isGenerating && (
-              <div className="flex items-center justify-center text-sm text-muted-foreground"><Loader2 className="mr-2 h-4 w-4 animate-spin" />Extracting text...</div>
+              <div className="flex items-center justify-center text-sm text-muted-foreground"><Loader2 className="mr-2 h-4 w-4 animate-spin text-accent text-glow-accent" />Extracting text...</div>
             )}
             {fileName && !isProcessing && (
               <div className="text-center text-sm text-muted-foreground flex items-center justify-center">
@@ -125,8 +125,8 @@ export function FlashcardGenerator() {
           </div>
           
           {extractedText && (
-            <Button onClick={handleGenerateFlashcards} className="w-full bg-accent hover:bg-accent/90 text-accent-foreground" size="lg" disabled={isProcessing}>
-              {isGenerating ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : <Wand2 className="mr-2 h-5 w-5" />}
+            <Button onClick={handleGenerateFlashcards} className="w-full bg-accent hover:bg-accent/90 text-accent-foreground glow-accent" size="lg" disabled={isProcessing}>
+              {isGenerating ? <Loader2 className="mr-2 h-5 w-5 animate-spin text-accent text-glow-accent" /> : <Wand2 className="mr-2 h-5 w-5" />}
               {isGenerating ? 'Generating...' : 'Generate Flashcards'}
             </Button>
           )}
