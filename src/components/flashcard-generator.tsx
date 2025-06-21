@@ -14,6 +14,7 @@ import { QuizMode } from './quiz-mode';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
 import { Leaderboard } from './leaderboard';
+import { ThemeToggle } from './theme-toggle';
 
 if (typeof window !== 'undefined') {
   pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
@@ -134,7 +135,11 @@ export function FlashcardGenerator() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 md:py-12">
+    <div className="container mx-auto px-4 py-8 md:py-12 relative">
+       <div className="absolute top-4 right-4 z-10 sm:top-8 sm:right-8">
+        <ThemeToggle />
+      </div>
+
       {!isQuizMode && (
         <Card className="w-full max-w-2xl mx-auto shadow-2xl shadow-accent/30 animate-in fade-in-0 zoom-in-95">
           <CardHeader className="text-center p-8">
