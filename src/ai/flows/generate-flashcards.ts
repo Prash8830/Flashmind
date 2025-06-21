@@ -22,7 +22,7 @@ const GenerateFlashcardsOutputSchema = z.object({
       question: z.string().describe('The flashcard question.'),
       answer: z.string().describe('The flashcard answer.'),
     })
-  ).describe('The generated flashcards in JSON format.'),
+  ).max(5).describe('An array of 5 flashcards in JSON format.'),
   progress: z.string().describe('Progress message for flashcard generation')
 });
 export type GenerateFlashcardsOutput = z.infer<typeof GenerateFlashcardsOutputSchema>;
@@ -37,11 +37,11 @@ const flashcardPrompt = ai.definePrompt({
   output: {schema: GenerateFlashcardsOutputSchema},
   prompt: `You are an expert educator skilled at creating flashcards from text.
 
-  Given the following text, generate a set of flashcards that cover the core concepts. Each flashcard should have a question and an answer.
+  Given the following text, generate a set of 5 flashcards that cover the core concepts. Each flashcard should have a question and an answer.
 
   Text: {{{text}}}
 
-  Format the output as a JSON array of flashcards, where each flashcard has a "question" and an "answer" field.
+  Format the output as a JSON array of 5 flashcards, where each flashcard has a "question" and an "answer" field.
   Include a short, one-sentence summary of what you have generated to the 'progress' field in the output.
   `,
 });
