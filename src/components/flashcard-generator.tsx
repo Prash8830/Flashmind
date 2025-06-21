@@ -2,7 +2,7 @@
 'use client';
 
 import { useState, useRef, useTransition } from 'react';
-import { Upload, FileText, BrainCircuit, Loader2, Wand2, TestTube2, Sparkles } from 'lucide-react';
+import { Upload, FileText, BrainCircuit, Loader2, Wand2, TestTube2, Sparkles, Download } from 'lucide-react';
 import * as pdfjs from 'pdfjs-dist';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -16,6 +16,9 @@ import { Label } from '@/components/ui/label';
 import { Leaderboard } from './leaderboard';
 import { ThemeToggle } from './theme-toggle';
 import { Switch } from '@/components/ui/switch';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 
 if (typeof window !== 'undefined') {
   pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
@@ -105,6 +108,47 @@ export function FlashcardGenerator() {
   const handleUploadClick = () => {
     fileInputRef.current?.click();
   };
+  
+  const handleExportCsv = () => {
+    if (flashcards.length === 0) {
+      toast({ title: 'No flashcards to export', variant: 'destructive' });
+      return;
+    }
+    const headers = ['"Question"', '"Answer"'];
+    const rows = flashcards.map(card => `"${card.question.replace(/"/g, '""')}", "${card.answer.replace(/"/g, '""')}"`);
+    const csvContent = "data:text/csv;charset=utf-8," + [headers.join(','), ...rows].join('\n');
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "flashcards.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    toast({ title: 'Exported as CSV' });
+  };
+
+  const handleExportPdf = () => {
+    if (flashcards.length === 0) {
+      toast({ title: 'No flashcards to export', variant: 'destructive' });
+      return;
+    }
+    const doc = new jsPDF();
+    
+    doc.setFontSize(20);
+    doc.text("Flashcards", 105, 20, { align: 'center' });
+
+    (doc as any).autoTable({
+        head: [['Question', 'Answer']],
+        body: flashcards.map(card => [card.question, card.answer]),
+        startY: 30,
+        headStyles: {
+            fillColor: [69, 143, 246],
+        },
+    });
+
+    doc.save('flashcards.pdf');
+    toast({ title: 'Exported as PDF' });
+  };
 
   const renderContent = () => {
     if (isQuizMode) {
@@ -130,11 +174,23 @@ export function FlashcardGenerator() {
               />
             ))}
           </div>
-          <div className="text-center mt-12">
+          <div className="text-center mt-12 flex flex-col sm:flex-row items-center justify-center gap-4">
             <Button onClick={() => setIsQuizMode(true)} className="bg-primary hover:bg-primary/90 text-primary-foreground glow-on-hover" size="lg">
                 <TestTube2 className="mr-2 h-5 w-5" />
                 Start Quiz
             </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="lg" className="glow-on-hover">
+                  <Download className="mr-2 h-5 w-5" />
+                  Export Flashcards
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuItem onClick={handleExportCsv}>Export as CSV</DropdownMenuItem>
+                <DropdownMenuItem onClick={handleExportPdf}>Export as PDF</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
       );
