@@ -101,7 +101,7 @@ export function FlashcardGenerator() {
           <div className="mx-auto bg-accent/20 text-accent rounded-full p-3 w-fit mb-4">
             <BrainCircuit className="h-8 w-8" />
           </div>
-          <CardTitle className="font-headline text-3xl md:text-4xl tracking-widest uppercase">Flashcard Generator</CardTitle>
+          <CardTitle className="font-headline text-3xl md:text-4xl tracking-widest uppercase">FlashMind</CardTitle>
           <CardDescription className="font-body text-base mt-2">
             Upload a data file (PDF) and our AI will synthesize knowledge implants (flashcards).
           </CardDescription>
