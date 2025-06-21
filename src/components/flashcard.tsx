@@ -8,9 +8,11 @@ interface FlashcardProps {
   question: string;
   answer: string;
   index: number;
+  emoji?: string;
+  isVisualMode?: boolean;
 }
 
-export function Flashcard({ question, answer, index }: FlashcardProps) {
+export function Flashcard({ question, answer, index, emoji, isVisualMode }: FlashcardProps) {
   const [isFlipped, setIsFlipped] = useState(false);
 
   const animationDelay = `${index * 100}ms`;
@@ -32,6 +34,7 @@ export function Flashcard({ question, answer, index }: FlashcardProps) {
         )}
       >
         <div className="absolute backface-hidden w-full h-full p-6 flex flex-col justify-center items-center text-center">
+          {isVisualMode && emoji && <p className="text-4xl mb-2">{emoji}</p>}
           <p className="text-sm text-primary font-headline uppercase tracking-widest">Question</p>
           <p className="mt-2 text-lg font-body">{question}</p>
         </div>

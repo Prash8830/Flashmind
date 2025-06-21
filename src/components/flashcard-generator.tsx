@@ -2,7 +2,7 @@
 'use client';
 
 import { useState, useRef, useTransition } from 'react';
-import { Upload, FileText, BrainCircuit, Loader2, Wand2, TestTube2 } from 'lucide-react';
+import { Upload, FileText, BrainCircuit, Loader2, Wand2, TestTube2, Sparkles } from 'lucide-react';
 import * as pdfjs from 'pdfjs-dist';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -15,6 +15,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Label } from '@/components/ui/label';
 import { Leaderboard } from './leaderboard';
 import { ThemeToggle } from './theme-toggle';
+import { Switch } from '@/components/ui/switch';
 
 if (typeof window !== 'undefined') {
   pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
@@ -42,6 +43,7 @@ export function FlashcardGenerator() {
   const [isProcessing, startProcessing] = useTransition();
   const [isGenerating, setIsGenerating] = useState(false);
   const [isQuizMode, setIsQuizMode] = useState(false);
+  const [isVisualMode, setIsVisualMode] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState('English');
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
@@ -118,7 +120,14 @@ export function FlashcardGenerator() {
           <h2 className="text-2xl md:text-3xl font-headline text-center mb-8 uppercase tracking-widest">Your Flashcards</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {flashcards.map((card, index) => (
-              <Flashcard key={index} question={card.question} answer={card.answer} index={index} />
+              <Flashcard 
+                key={index} 
+                question={card.question} 
+                answer={card.answer} 
+                emoji={card.emoji}
+                isVisualMode={isVisualMode}
+                index={index} 
+              />
             ))}
           </div>
           <div className="text-center mt-12">
@@ -184,6 +193,18 @@ export function FlashcardGenerator() {
                           <SelectItem value="Tamil">Tamil</SelectItem>
                       </SelectContent>
                   </Select>
+                </div>
+                <div className="flex items-center justify-between pt-2">
+                  <Label htmlFor="visual-mode" className="flex items-center gap-2 text-base font-body text-muted-foreground">
+                    <Sparkles className="h-4 w-4 text-accent" />
+                    Visual Mode
+                  </Label>
+                  <Switch
+                    id="visual-mode"
+                    checked={isVisualMode}
+                    onCheckedChange={setIsVisualMode}
+                    disabled={isProcessing}
+                  />
                 </div>
                 <Button onClick={handleGenerateFlashcards} className="w-full bg-accent hover:bg-accent/90 text-accent-foreground glow-accent" size="lg" disabled={isProcessing}>
                   {isGenerating ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : <Wand2 className="mr-2 h-5 w-5" />}

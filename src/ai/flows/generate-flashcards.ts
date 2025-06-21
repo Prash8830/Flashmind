@@ -29,6 +29,7 @@ const GenerateFlashcardsOutputSchema = z.object({
       z.object({
         question: z.string().describe('The flashcard question.'),
         answer: z.string().describe('The flashcard answer.'),
+        emoji: z.string().optional().describe('A single emoji relevant to the question.'),
       })
     )
     .describe('An array of flashcards in JSON format.'),
@@ -50,14 +51,14 @@ const flashcardPrompt = ai.definePrompt({
   output: {schema: GenerateFlashcardsOutputSchema},
   prompt: `You are an expert educator skilled at creating flashcards from text.
 
-  Given the following text, generate a set of flashcards that cover the core concepts. Each flashcard should have a question and an answer.
+  Given the following text, generate a set of flashcards that cover the core concepts. Each flashcard should have a question, an answer, and a single relevant emoji.
 
-  The user has requested the flashcards to be in {{language}}. You MUST translate both the question and answer for each flashcard to {{language}}.
+  The user has requested the flashcards to be in {{language}}. You MUST translate both the question and answer for each flashcard to {{language}}. The emoji does not need to be translated.
 
   Text: {{{text}}}
 
   Your output MUST be a JSON object with two keys:
-  1. "flashcards": An array of flashcard objects, where each object has a "question" and an "answer" field.
+  1. "flashcards": An array of flashcard objects, where each object has a "question", an "answer", and an "emoji" field.
   2. "progress": A short, one-sentence summary of what you have generated.
   `,
 });
