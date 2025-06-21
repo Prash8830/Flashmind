@@ -10,6 +10,8 @@ import { useToast } from '@/hooks/use-toast';
 import { generateFlashcards, type GenerateFlashcardsOutput } from '@/ai/flows/generate-flashcards';
 import { Flashcard } from './flashcard';
 import { QuizMode } from './quiz-mode';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Label } from '@/components/ui/label';
 
 if (typeof window !== 'undefined') {
   pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
@@ -37,6 +39,7 @@ export function FlashcardGenerator() {
   const [isProcessing, startProcessing] = useTransition();
   const [isGenerating, setIsGenerating] = useState(false);
   const [isQuizMode, setIsQuizMode] = useState(false);
+  const [selectedLanguage, setSelectedLanguage] = useState('English');
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
@@ -78,7 +81,7 @@ export function FlashcardGenerator() {
     setIsGenerating(true);
     startProcessing(async () => {
       try {
-        const result = await generateFlashcards({ text: extractedText });
+        const result = await generateFlashcards({ text: extractedText, language: selectedLanguage });
         if (result && result.flashcards) {
           setFlashcards(result.flashcards);
           toast({ title: 'Success!', description: result.progress || 'Flashcards generated successfully.' });
@@ -160,10 +163,26 @@ export function FlashcardGenerator() {
             </div>
             
             {extractedText && (
-              <Button onClick={handleGenerateFlashcards} className="w-full bg-accent hover:bg-accent/90 text-accent-foreground glow-accent" size="lg" disabled={isProcessing}>
-                {isGenerating ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : <Wand2 className="mr-2 h-5 w-5" />}
-                {isGenerating ? 'Generating...' : 'Generate Flashcards'}
-              </Button>
+              <div className="space-y-4 pt-4 border-t border-border">
+                <div className="grid w-full items-center gap-1.5">
+                  <Label htmlFor="language-select" className="text-muted-foreground text-sm">Translate to</Label>
+                  <Select value={selectedLanguage} onValueChange={setSelectedLanguage} disabled={isProcessing}>
+                      <SelectTrigger id="language-select" className="w-full">
+                          <SelectValue placeholder="Select language" />
+                      </SelectTrigger>
+                      <SelectContent>
+                          <SelectItem value="English">English</SelectItem>
+                          <SelectItem value="Hindi">Hindi</SelectItem>
+                          <SelectItem value="Kannada">Kannada</SelectItem>
+                          <SelectItem value="Tamil">Tamil</SelectItem>
+                      </SelectContent>
+                  </Select>
+                </div>
+                <Button onClick={handleGenerateFlashcards} className="w-full bg-accent hover:bg-accent/90 text-accent-foreground glow-accent" size="lg" disabled={isProcessing}>
+                  {isGenerating ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : <Wand2 className="mr-2 h-5 w-5" />}
+                  {isGenerating ? 'Generating...' : 'Generate Flashcards'}
+                </Button>
+              </div>
             )}
 
           </CardContent>

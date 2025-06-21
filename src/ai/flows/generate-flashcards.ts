@@ -13,21 +13,34 @@ import {z} from 'genkit';
 
 const GenerateFlashcardsInputSchema = z.object({
   text: z.string().describe('The text content extracted from the PDF.'),
+  language: z
+    .string()
+    .optional()
+    .default('English')
+    .describe('The language to translate the flashcards into.'),
 });
-export type GenerateFlashcardsInput = z.infer<typeof GenerateFlashcardsInputSchema>;
+export type GenerateFlashcardsInput = z.infer<
+  typeof GenerateFlashcardsInputSchema
+>;
 
 const GenerateFlashcardsOutputSchema = z.object({
-  flashcards: z.array(
-    z.object({
-      question: z.string().describe('The flashcard question.'),
-      answer: z.string().describe('The flashcard answer.'),
-    })
-  ).describe('An array of flashcards in JSON format.'),
-  progress: z.string().describe('Progress message for flashcard generation')
+  flashcards: z
+    .array(
+      z.object({
+        question: z.string().describe('The flashcard question.'),
+        answer: z.string().describe('The flashcard answer.'),
+      })
+    )
+    .describe('An array of flashcards in JSON format.'),
+  progress: z.string().describe('Progress message for flashcard generation'),
 });
-export type GenerateFlashcardsOutput = z.infer<typeof GenerateFlashcardsOutputSchema>;
+export type GenerateFlashcardsOutput = z.infer<
+  typeof GenerateFlashcardsOutputSchema
+>;
 
-export async function generateFlashcards(input: GenerateFlashcardsInput): Promise<GenerateFlashcardsOutput> {
+export async function generateFlashcards(
+  input: GenerateFlashcardsInput
+): Promise<GenerateFlashcardsOutput> {
   return generateFlashcardsFlow(input);
 }
 
@@ -38,6 +51,8 @@ const flashcardPrompt = ai.definePrompt({
   prompt: `You are an expert educator skilled at creating flashcards from text.
 
   Given the following text, generate a set of flashcards that cover the core concepts. Each flashcard should have a question and an answer.
+
+  The user has requested the flashcards to be in {{language}}. You MUST translate both the question and answer for each flashcard to {{language}}.
 
   Text: {{{text}}}
 
