@@ -23,7 +23,7 @@ export function QuizResults({ score, totalQuestions, onRestart, onExit }: QuizRe
   const { toast } = useToast();
   const percentage = Math.round((score / totalQuestions) * 100);
 
-  const handleSubmitScore = async (e: React.FormEvent) => {
+  const handleSubmitScore = (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim()) {
       toast({ title: 'Name Required', description: 'Please enter your name.', variant: 'destructive' });
@@ -73,19 +73,18 @@ export function QuizResults({ score, totalQuestions, onRestart, onExit }: QuizRe
           ) : (
             <form onSubmit={handleSubmitScore} className="space-y-4 pt-4 border-t border-border">
               <p className="font-body text-lg">Enter your name for the leaderboard!</p>
-              <div className="flex gap-2">
-                <Input
+               <Input
                   type="text"
                   placeholder="Your Name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="text-center"
+                  className="text-center h-12 text-lg"
                   disabled={isSubmitting}
                 />
-                <Button type="submit" className="bg-accent hover:bg-accent/90 text-accent-foreground glow-accent" disabled={isSubmitting} size="icon">
-                  {isSubmitting ? <Loader2 className="animate-spin" /> : <Send />}
+                <Button type="submit" className="w-full bg-accent hover:bg-accent/90 text-accent-foreground glow-accent" disabled={isSubmitting} size="lg">
+                  {isSubmitting ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : <Send className="mr-2 h-5 w-5" />}
+                  {isSubmitting ? 'Submitting...' : 'Save Score'}
                 </Button>
-              </div>
             </form>
           )}
         </CardContent>
