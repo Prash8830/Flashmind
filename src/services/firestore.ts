@@ -8,16 +8,14 @@ export interface LeaderboardEntry {
   id?: string;
   name: string;
   score: number;
-  totalQuestions: number;
   createdAt: any;
 }
 
-export async function addScoreToLeaderboard(name: string, score: number, totalQuestions: number): Promise<void> {
+export async function addScoreToLeaderboard(name: string, score: number): Promise<void> {
   try {
-    await addDoc(collection(db, 'leaderboard'), {
+    await addDoc(collection(db, 'quizResults'), {
       name,
       score,
-      totalQuestions,
       createdAt: serverTimestamp(),
     });
   } catch (error) {
@@ -28,7 +26,7 @@ export async function addScoreToLeaderboard(name: string, score: number, totalQu
 
 export async function getLeaderboard(): Promise<LeaderboardEntry[]> {
   try {
-    const q = query(collection(db, "leaderboard"), orderBy("score", "desc"), limit(5));
+    const q = query(collection(db, "quizResults"), orderBy("score", "desc"), limit(5));
     const querySnapshot = await getDocs(q);
     const leaderboard: LeaderboardEntry[] = [];
     querySnapshot.forEach((doc) => {

@@ -57,7 +57,7 @@ export function Leaderboard() {
                 <TableRow key={entry.id}>
                   <TableCell className="text-center font-bold text-lg">{index + 1}</TableCell>
                   <TableCell>{entry.name}</TableCell>
-                  <TableCell className="text-right font-bold text-lg text-primary">{entry.score} / {entry.totalQuestions}</TableCell>
+                  <TableCell className="text-right font-bold text-lg text-primary">{entry.score}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
