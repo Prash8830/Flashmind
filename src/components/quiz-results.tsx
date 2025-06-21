@@ -64,7 +64,7 @@ export function QuizResults({ score, totalQuestions, onRestart, onExit }: QuizRe
           {isScoreSubmitted ? (
             <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4 border-t border-border">
               <Button onClick={onRestart} className="w-full sm:w-auto glow-on-hover" variant="outline" size="lg">
-                Try Again
+                Retry Quiz
               </Button>
               <Button onClick={onExit} className="w-full sm:w-auto bg-accent hover:bg-accent/90 text-accent-foreground glow-accent" size="lg">
                 Finish
