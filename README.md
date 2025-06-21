@@ -4,7 +4,7 @@
 
 Built in just 4 hours during the VIBE-ATHON hackathon using **Firebase** and **Gemini AI**, FlashMind is simple, powerful, and demo-ready.
 
-![FlashMind Banner](assets/flashmind-banner.png)
+
 
 ---
 
