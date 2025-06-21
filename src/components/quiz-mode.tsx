@@ -5,9 +5,10 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
-import { CheckCircle, Loader2, Send, XCircle } from 'lucide-react';
+import { CheckCircle, Loader2, Send, XCircle, HelpCircle } from 'lucide-react';
 import { type GenerateFlashcardsOutput } from '@/ai/flows/generate-flashcards';
 import { evaluateAnswer } from '@/ai/flows/evaluate-answer';
+import { explainQuestion } from '@/ai/flows/explain-question';
 import { QuizResults } from './quiz-results';
 
 type FlashcardType = GenerateFlashcardsOutput['flashcards'][0];
@@ -23,7 +24,9 @@ export function QuizMode({ flashcards, onExitQuiz }: QuizModeProps) {
   const [score, setScore] = useState(0);
   const [quizFinished, setQuizFinished] = useState(false);
   const [isChecking, startChecking] = useTransition();
+  const [isExplaining, startExplaining] = useTransition();
   const [lastResult, setLastResult] = useState<{ isCorrect: boolean; feedback: string } | null>(null);
+  const [explanation, setExplanation] = useState<string | null>(null);
   const { toast } = useToast();
 
   const currentQuestion = flashcards[currentQuestionIndex];
@@ -55,9 +58,34 @@ export function QuizMode({ flashcards, onExitQuiz }: QuizModeProps) {
     });
   };
 
+  const handleExplainQuestion = () => {
+    if (!currentQuestion) return;
+    setExplanation(null);
+    startExplaining(async () => {
+      try {
+        const result = await explainQuestion({
+          question: currentQuestion.question,
+        });
+        if (result && result.explanation) {
+          setExplanation(result.explanation);
+        } else {
+          throw new Error('Invalid explanation response from AI.');
+        }
+      } catch (error) {
+        console.error('Error getting explanation:', error);
+        toast({
+          title: 'Explanation Failed',
+          description: 'Could not get an explanation for this question.',
+          variant: 'destructive',
+        });
+      }
+    });
+  };
+
   const handleNextQuestion = () => {
     setLastResult(null);
     setUserAnswer('');
+    setExplanation(null);
     if (currentQuestionIndex < flashcards.length - 1) {
       setCurrentQuestionIndex(prev => prev + 1);
     } else {
@@ -71,6 +99,7 @@ export function QuizMode({ flashcards, onExitQuiz }: QuizModeProps) {
       setUserAnswer('');
       setQuizFinished(false);
       setLastResult(null);
+      setExplanation(null);
   }
 
   if (quizFinished) {
@@ -122,6 +151,23 @@ export function QuizMode({ flashcards, onExitQuiz }: QuizModeProps) {
                 <span className="font-bold">Correct Answer: </span>
                 <span className="text-muted-foreground">{currentQuestion.answer}</span>
               </p>
+
+              {!explanation && !isExplaining && (
+                <Button onClick={handleExplainQuestion} variant="ghost" size="sm" disabled={isExplaining}>
+                  <HelpCircle className="mr-2 h-4 w-4" />
+                  Why?
+                </Button>
+              )}
+              {isExplaining && (
+                 <div className="flex items-center justify-center text-sm text-muted-foreground"><Loader2 className="mr-2 h-4 w-4 animate-spin" />Getting explanation...</div>
+              )}
+              {explanation && (
+                <div className="p-3 bg-card rounded-md border border-input text-left animate-in fade-in-0">
+                  <p className="font-bold text-sm text-primary">Explanation</p>
+                  <p className="text-muted-foreground mt-1">{explanation}</p>
+                </div>
+              )}
+
               <Button onClick={handleNextQuestion} className="w-full glow-on-hover" variant="outline" size="lg">
                 {currentQuestionIndex < flashcards.length - 1 ? 'Next Question' : 'Finish Quiz'}
               </Button>
