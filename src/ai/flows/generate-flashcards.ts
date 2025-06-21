@@ -56,8 +56,9 @@ const flashcardPrompt = ai.definePrompt({
 
   Text: {{{text}}}
 
-  Format the output as a JSON array of flashcards, where each flashcard has a "question" and an "answer" field.
-  Include a short, one-sentence summary of what you have generated to the 'progress' field in the output.
+  Your output MUST be a JSON object with two keys:
+  1. "flashcards": An array of flashcard objects, where each object has a "question" and an "answer" field.
+  2. "progress": A short, one-sentence summary of what you have generated.
   `,
 });
 
