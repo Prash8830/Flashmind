@@ -100,7 +100,10 @@ export function FlashcardGenerator() {
 
   const renderContent = () => {
     if (isQuizMode) {
-      return <QuizMode flashcards={flashcards} onExitQuiz={() => setIsQuizMode(false)} />;
+      const quizFlashcards = [...flashcards]
+        .sort(() => 0.5 - Math.random())
+        .slice(0, 5);
+      return <QuizMode flashcards={quizFlashcards} onExitQuiz={() => setIsQuizMode(false)} />;
     }
 
     if (flashcards.length > 0) {
