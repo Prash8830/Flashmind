@@ -49,24 +49,15 @@ const flashcardPrompt = ai.definePrompt({
   name: 'flashcardPrompt',
   input: {schema: GenerateFlashcardsInputSchema},
   output: {schema: GenerateFlashcardsOutputSchema},
-  prompt: `You are an expert educator skilled at creating flashcards from text.
-
-  Task: Generate flashcards based on the provided text.
-
-  Instructions:
-  - Create flashcards covering the core concepts from the text.
+  system: `You are an expert educator and API that returns valid JSON.
+  - Create flashcards covering the core concepts from the provided text.
   - Each flashcard must have a 'question', an 'answer', and a single relevant 'emoji'.
-  - The flashcards must be in '{{language}}'. Translate the 'question' and 'answer' to this language. The 'emoji' does not need translation.
+  - The flashcards must be in the requested language. Translate the 'question' and 'answer' to this language. The 'emoji' does not need translation.
   - Provide a short, one-sentence summary of the generation process in the 'progress' field.
-
-  Input Text:
+  - Your entire output must be a single, valid JSON object that strictly adheres to the output schema. Do not add any text or markdown formatting before or after the JSON.`,
+  prompt: `Please generate flashcards in {{language}} from the following text:
+  
   {{{text}}}
-
-  Output Format:
-  Your entire output must be a single, valid JSON object. Do not add any text before or after the JSON.
-  The JSON object must contain two keys:
-  1. "flashcards": An array of objects, where each object has "question", "answer", and "emoji" fields.
-  2. "progress": A string summarizing the task completion.
   `,
 });
 
