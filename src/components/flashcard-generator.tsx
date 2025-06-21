@@ -96,14 +96,14 @@ export function FlashcardGenerator() {
 
   return (
     <div className="container mx-auto px-4 py-8 md:py-12">
-      <Card className="w-full max-w-2xl mx-auto shadow-lg animate-in fade-in-0 zoom-in-95">
+      <Card className="w-full max-w-2xl mx-auto shadow-2xl shadow-accent/30 animate-in fade-in-0 zoom-in-95">
         <CardHeader className="text-center p-8">
-          <div className="mx-auto bg-primary/10 text-primary rounded-full p-3 w-fit mb-4">
+          <div className="mx-auto bg-accent/20 text-accent rounded-full p-3 w-fit mb-4">
             <BrainCircuit className="h-8 w-8" />
           </div>
-          <CardTitle className="font-headline text-3xl md:text-4xl">Flashcard Generator</CardTitle>
+          <CardTitle className="font-headline text-3xl md:text-4xl tracking-widest uppercase">Flashcard Generator</CardTitle>
           <CardDescription className="font-body text-base mt-2">
-            Upload a PDF to instantly create a set of study flashcards with AI.
+            Upload a data file (PDF) and our AI will synthesize knowledge implants (flashcards).
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6 px-8 pb-8">
@@ -136,7 +136,7 @@ export function FlashcardGenerator() {
 
       {flashcards.length > 0 && (
         <div className="mt-12">
-          <h2 className="text-2xl md:text-3xl font-headline text-center mb-8">Your Flashcards</h2>
+          <h2 className="text-2xl md:text-3xl font-headline text-center mb-8 uppercase tracking-widest">Your Flashcards</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {flashcards.map((card, index) => (
               <Flashcard key={index} question={card.question} answer={card.answer} index={index} />
