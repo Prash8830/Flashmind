@@ -51,15 +51,22 @@ const flashcardPrompt = ai.definePrompt({
   output: {schema: GenerateFlashcardsOutputSchema},
   prompt: `You are an expert educator skilled at creating flashcards from text.
 
-  Given the following text, generate a set of flashcards that cover the core concepts. Each flashcard should have a question, an answer, and a single relevant emoji.
+  Task: Generate flashcards based on the provided text.
 
-  The user has requested the flashcards to be in {{language}}. You MUST translate both the question and answer for each flashcard to {{language}}. The emoji does not need to be translated.
+  Instructions:
+  - Create flashcards covering the core concepts from the text.
+  - Each flashcard must have a 'question', an 'answer', and a single relevant 'emoji'.
+  - The flashcards must be in '{{language}}'. Translate the 'question' and 'answer' to this language. The 'emoji' does not need translation.
+  - Provide a short, one-sentence summary of the generation process in the 'progress' field.
 
-  Text: {{{text}}}
+  Input Text:
+  {{{text}}}
 
-  Your output MUST be a JSON object with two keys:
-  1. "flashcards": An array of flashcard objects, where each object has a "question", an "answer", and an "emoji" field.
-  2. "progress": A short, one-sentence summary of what you have generated.
+  Output Format:
+  Your entire output must be a single, valid JSON object. Do not add any text before or after the JSON.
+  The JSON object must contain two keys:
+  1. "flashcards": An array of objects, where each object has "question", "answer", and "emoji" fields.
+  2. "progress": A string summarizing the task completion.
   `,
 });
 
@@ -71,6 +78,9 @@ const generateFlashcardsFlow = ai.defineFlow(
   },
   async input => {
     const {output} = await flashcardPrompt(input);
-    return output!;
+    if (!output) {
+        throw new Error('The AI failed to generate a valid response that matches the expected format.');
+    }
+    return output;
   }
 );

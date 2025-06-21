@@ -95,7 +95,7 @@ export function FlashcardGenerator() {
         }
       } catch (error) {
         console.error('Error generating flashcards:', error);
-        toast({ title: 'Generation Failed', description: 'Could not generate flashcards. Please try again.', variant: 'destructive' });
+        toast({ title: 'Generation Failed', description: 'The AI returned an invalid response. Please try again.', variant: 'destructive' });
       } finally {
         setIsGenerating(false);
       }
